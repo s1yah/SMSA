@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiwi Subscription Plan</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background: #121212;
+            color: #ffffff;
+            padding: 20px;
+            margin: 0;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        form {
+            background: #1E1E1E;
+            padding: 20px;
+            max-width: 500px;
+            margin: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="number"],
+        input[type="email"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 6px; /* Slightly more rounded */
+            border: 1px solid #333; /* Darker border */
+            background: #2A2A2A; /* Dark input background */
+            color: #ffffff; /* White text in inputs */
+            box-sizing: border-box;
+        }
+        button {
+            margin-top: 20px;
+            padding: 12px 20px;
+            background: #1DB954; /* Kiwi */
+            color: white;
+            border: none;
+            border-radius: 6px; /* More rounded corners */
+            cursor: pointer;
+            font-size: 1.1em; /* Slightly larger text */
+            transition: background 0.3s ease; /* Smooth transition */
+        }
+        button:hover {
+            background: #189945;
+        }
+        h2 {
+            font-size: 1.5em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        #summary {
+            margin-top: 20px;
+            padding: 20px;
+            background: #1E1E1E;
+            border-radius: 12px;
+            display: none;
+        }
+                .row {
+            display: flex;
+            justify-content: space-between;
+        }
+        .column {
+            flex: 33.33%;
+            position: relative; 
+            overflow: hidden; 
+        }
+        .column img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(30, 215, 96, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5em; 
+            opacity: 0;
+            transition: opacity 0.3s; 
+        }
+        .column:hover .overlay {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Kiwi Music</h1>
+
+    <h2>Register</h2>
+    <select id="roleSelect">
+        <option value="">Menu</option>
+        <option value="account">Personal Information</option>
+        <option value="subscription">Subscription</option>
+        <option value="billing">Billing</option>
+    </select>
+
+    <button onclick="applyRole()">Enter</button>
+
+    <div id="panel" style="display: none;"></div>
+
+    <br>
+    <br>
+    <br>
+
+        <!--Music Genres--->
+    <div class="row">
+        <div class="column">
+            <img src="https://m.media-amazon.com/images/M/MV5BNjNiNDk0MjItNTA1Mi00OWE4LWEzZTYtNTY2NDUxODZkODQwXkEyXkFqcGc@._V1_.jpg" alt="OPM">
+            <div class="overlay">OPM</div>
+        </div>
+        <div class="column">
+            <img src="https://www.billboard.com/wp-content/uploads/2025/03/feature-aespa-billboard-2025-bb5-abi-polinsky-5-1260.jpg?w=1260&h=840&crop=1" alt="K-POP">
+            <div class="overlay">K-POP</div>
+        </div>
+        <div class="column">
+            <img src="https://i8.amplience.net/i/naras/MI0006328857-MN0002688864" alt="POP">
+            <div class="overlay">POP</div>
+        </div>
+    </div>
+    
+    <br>
+    <br>
+    <br>
+
+    <div>
+        <div id="summary"> <!-- Summary container -->
+            <h2>User Inputs Summary</h2>
+            <div id="summaryContent"></div>
+            <button onclick="confirmSubmission()">Start Free 1 Month</button>
+        </div>
+    </div>
+
+    <form id="googleForm" style="display: none;"> <!-- Google Form -->
+        <input type="hidden" name="name" id="hiddenName">
+        <input type="hidden" name="age" id="hiddenAge">
+        <input type="hidden" name="dob" id="hiddenDob">
+        <input type="hidden" name="email" id="hiddenEmail">
+        <input type="hidden" name="amount" id="hiddenAmount">
+        <input type="hidden" name="paymentmethod" id="hiddenPaymentMethod">
+        <input type="hidden" name="subscriptiontype" id="hiddenSubscriptionType">
+    </form>
+
+    <script>
+
+        let subscriptionSelected = false; // Track if a subscription has been selected
+
+        // Navigations    
+        function applyRole() {
+            const role = document.getElementById("roleSelect").value;
+            const panel = document.getElementById("panel");
+            panel.className = ""; // Clear previous styling
+            panel.classList.remove("show");
+
+            setTimeout(() => {
+                switch (role) {
+                    case 'account':
+                        showAccountPanel(panel);
+                        break;
+                    case 'subscription':
+                        showSubscription(panel);
+                        break;
+                    case 'billing':
+                        showBilling(panel);
+                        break;
+                    default:
+                }
+                panel.style.display = 'block';
+                panel.classList.add("show");
+            }, 100);
+        }
+
+        // Show My Account
+        function showAccountPanel(panel) {
+            panel.classList.add("account");
+            panel.innerHTML = `
+                <h2>Personal Information</h2>
+                <div>
+                    <label for="name">Full Name</label>
+                    <input type="text" name="name" id="name" required>
+                </div>
+                <div>
+                    <label for="age">Age</label>
+                    <input type="number" name="age" id="age" required>
+                </div>
+                <div>
+                    <label>Date of Birth</label>        
+                    <input type="date" name="dob" id="dob" required>
+                </div>
+                <div>
+                    <label for="email">Email</label>
+                    <input type="email" name="email" id="email" required>
+                </div>
+                <button type="button" onclick="savePersonalInfo()">Save</button>
+            `;
+        }
+
+        function showBilling(panel) {
+            panel.classList.add("billing");
+            panel.innerHTML = `
+                <h2>Top-Up Details</h2>
+                <div>
+                    <label>Amount</label>
+                    <input type="number" name="amount" id="amount" required>
+                </div>
+                <div>
+                    <label>Payment Method</label>
+                    <select id="paymentmethod" name="paymentmethod" required>
+                        <option value="">Select Method</option>
+                        <option value="Paypal">Paypal</option>
+                        <option value="Gcash">Gcash</option>
+                        <option value="PayMaya">PayMaya</option>
+                        <option value="Credit Card">Credit Card</option>
+                    </select>
+                </div>
+                <button type="button" onclick="savePaymentDetails()">Save</button>
+            `;
+        }
+
+        const subscriptionPlans = [
+        { type: "Individual", price: 139 },
+        { type: "Family", price: 219 },
+        { type: "Student", price: 79 }
+        ];
+
+        function showSubscription(panel) {
+            panel.classList.add("subscription");
+            let optionsHTML = `<h2>Choose Your Plan</h2>`;
+            for (let i = 0; i < subscriptionPlans.length; i++) {
+                optionsHTML += `
+                <div>
+                    <label>
+                        <input type="radio" name="subscriptiontype" value="${subscriptionPlans[i].type}" ${i === 0 ? 'checked' : ''}>
+                        ${subscriptionPlans[i].type} (₱${subscriptionPlans[i].price}/month) after trial ends.
+                    </label>
+                </div>
+                `;
+            }
+            optionsHTML += `<button type="button" onclick="saveSubscriptionPlan()">Save</button>`;
+            panel.innerHTML = optionsHTML;
+
+        }
+
+        //Confirmation  of Age (if statement)
+        function validateAge(age) {
+            if (age < 18) {
+                alert("Age must be 18 yrs old higher to avail subscription.");
+                return false;
+            }
+            return true;
+        }
+
+        // Save Personal Information
+        function savePersonalInfo() {
+            const name = document.getElementById('name').value;
+            const age = document.getElementById('age').value;
+            const dob = document.getElementById('dob').value;
+            const email = document.getElementById('email').value;
+
+            // Validate age before proceeding
+            if (!validateAge(age)) {
+                return; // Stop execution if age is invalid
+            }
+
+            // Clear previous summary content
+            document.getElementById('summaryContent').innerHTML = '';
+
+            // Update hidden fields in the googleForm
+            document.getElementById('hiddenName').value = name;
+            document.getElementById('hiddenAge').value = age;
+            document.getElementById('hiddenDob').value = dob;
+            document.getElementById('hiddenEmail').value = email;
+
+            const summaryContent = `
+                <p><strong>Full Name:</strong> ${name}</p>
+                <p><strong>Age:</strong> ${age}</p>
+                <p><strong>Date of Birth:</strong> ${dob}</p>
+                <p><strong>Email:</strong> ${email}</p>
+            `;
+
+            document.getElementById('summaryContent').innerHTML += summaryContent;
+            document.getElementById('summary').style.display = 'block'; // Show the summary
+        }
+
+        // Save Payment Details
+        function savePaymentDetails() {
+            const amount = document.getElementById('amount').value;
+            const paymentMethod = document.getElementById('paymentmethod').value;
+
+            document.getElementById('summaryContent').innerHTML = ''; // Clear previous content
+
+            // Update hidden fields in the googleForm
+            document.getElementById('hiddenAmount').value = amount;
+            document.getElementById('hiddenPaymentMethod').value = paymentMethod;
+
+            const summaryContent = `
+                <p><strong>Amount:</strong> ₱${amount}</p>
+                <p><strong>Payment Method:</strong> ${paymentMethod}</p>
+            `;
+
+            document.getElementById('summaryContent').innerHTML += summaryContent;
+            document.getElementById('summary').style.display = 'block'; // Show the summary
+        }
+
+        // Save Subscription Plan
+        function saveSubscriptionPlan() {
+
+            if (subscriptionSelected){                
+                alert("You can only have one subscription plan. Please cancel your current subscription to select a new one.");
+                return; // Prevent saving another subscription
+            }
+
+            const subscriptionType = document.querySelector('input[name="subscriptiontype"]:checked').value;
+
+            document.getElementById('summaryContent').innerHTML = ''; // Clear previous content
+
+            // Update hidden field in the googleForm
+            document.getElementById('hiddenSubscriptionType').value = subscriptionType;
+
+            const summaryContent = `
+                <p><strong>Subscription Type:</strong> ${subscriptionType}</p>
+            `;
+
+            document.getElementById('summaryContent').innerHTML += summaryContent;
+            document.getElementById('summary').style.display = 'block'; // Show the summary
+
+            displaySummary();
+        }
+
+        //Displaying Selected Subscription Plan
+        function displaySummary() {
+            const subscriptionType = document.querySelector('input[name="subscriptiontype"]:checked').value;
+            let message = "";
+            if (subscriptionType === "Individual") {
+                message = "₱139.00/month after trial ends. Unlimited music for one person.";
+            } else if (subscriptionType === "Family") {
+                message = "₱219.00/month after trial ends. Unlimited music for families.";
+            } else {
+                message = "₱75.00/month after trial ends. This plan includes access to Kiwi TV.";
+            }
+            document.getElementById('summaryContent').innerHTML += `<p>${message}</p>`;
+        }
+
+
+        //Confirmation of Information
+        function confirmSubmission() {
+            let confirmed;
+            do {
+                confirmed = confirm("Are you sure you want to submit your information?");
+            } while (confirmed === false);
+            if (confirmed) {
+                submitToGoogleScript();
+            }
+        }
+
+        // Submit to Google Apps Script
+        function submitToGoogleScript() {
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbyqLTKpQS3oKba71SsagFK4YmN41W7rjthJYrNr7Y-FhEmCyYMV3JZBvrzDVjE8QDeb1w/exec';
+            const formData = new FormData(document.getElementById('googleForm'));
+            fetch(scriptURL, { method: 'POST', body: formData })
+                .then(response => {
+                    alert("Form submitted successfully!");
+                    document.getElementById('summary').style.display = 'none'; // Hide summary after submission
+                    document.getElementById('summaryContent').innerHTML = ''; // Clear summary content
+                    document.getElementById('googleForm').reset(); // Reset the form
+                })
+                .catch(error => alert('Error!', error.message));
+        }
+    </script>
+</body>
+</html>
